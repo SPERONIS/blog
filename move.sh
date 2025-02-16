@@ -1,0 +1,1 @@
+xcopy "F:\workspaces\newBlog\public" "F:\workspaces\SPERONIS.github.io" /e /y

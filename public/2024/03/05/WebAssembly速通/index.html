@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>WebAssembly速通 | SPERONIS`s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="前言最近接了一个业务，要将一个端上的能力搞到微信小程序上，在调研后决定使用 WebAssembly 方式接入，很快就把这块的技术调研和技术方案设计完成了，但相关的技术文章较少，本文分享下 WebAssembly 相关的基础知识和一些在项目中使用的踩坑经验。 WebAssembly引用官网的定义: WebAssembly(缩写为 Wasm) 是一种基于堆栈的虚拟机的二进制指令格式。 Wasm 被设计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebAssembly速通">
+<meta property="og:url" content="https://speronis.github.io/2024/03/05/WebAssembly%E9%80%9F%E9%80%9A/index.html">
+<meta property="og:site_name" content="SPERONIS&#96;s Blog">
+<meta property="og:description" content="前言最近接了一个业务，要将一个端上的能力搞到微信小程序上，在调研后决定使用 WebAssembly 方式接入，很快就把这块的技术调研和技术方案设计完成了，但相关的技术文章较少，本文分享下 WebAssembly 相关的基础知识和一些在项目中使用的踩坑经验。 WebAssembly引用官网的定义: WebAssembly(缩写为 Wasm) 是一种基于堆栈的虚拟机的二进制指令格式。 Wasm 被设计">
+<meta property="og:locale">
+<meta property="article:published_time" content="2024-03-05T04:08:10.000Z">
+<meta property="article:modified_time" content="2025-02-16T11:20:54.205Z">
+<meta property="article:author" content="SPERONIS">
+<meta property="article:tag" content="视野分享">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="SPERONIS`s Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">SPERONIS`s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Suche"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://speronis.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-WebAssembly速通" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/03/05/WebAssembly%E9%80%9F%E9%80%9A/" class="article-date">
+  <time class="dt-published" datetime="2024-03-05T04:08:10.000Z" itemprop="datePublished">2024-03-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      WebAssembly速通
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近接了一个业务，要将一个端上的能力搞到微信小程序上，在调研后决定使用 WebAssembly 方式接入，很快就把这块的技术调研和技术方案设计完成了，但相关的技术文章较少，本文分享下 WebAssembly 相关的基础知识和一些在项目中使用的踩坑经验。</p>
+<h2 id="WebAssembly"><a href="#WebAssembly" class="headerlink" title="WebAssembly"></a>WebAssembly</h2><p>引用官网的定义: WebAssembly(缩写为 Wasm) 是一种基于堆栈的虚拟机的二进制指令格式。 Wasm 被设计为编程语言的可移植编译目标，支持在网络上部署客户端和服务器应用程序。目前我们所接触到的 WebAssembly 更多的是 WebAssembly 及其生态;与传统的 JavaScript 不同，WebAssembly 可以提供更高的性能，特别是在需要执行计算密集型任务的情况下。它可以将C 和 C++ 代码打包成可执行的字节码，然后在 Web 浏览器中运行，以提供更快的加载速度和更高的性能。此外，WebAssembly 还支持模块化编程，使开发人员能够更轻松地管理代码，并且具有更高的可移植性。</p>
+<p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/WebAssembly">WebAssembly MDN</a></p>
+<h2 id="生态语言"><a href="#生态语言" class="headerlink" title="生态语言"></a>生态语言</h2><p>从 WebAssembly 问世以来就展现出巨大的发展潜力，受到业界的广泛关注，各大语言也是积极探索对 WebAssembly 的支持，从老大哥 C&#x2F;C++、javaScript 到新兴的 GO、Rust 等语言，各种编辑工具和生态链层出不穷，一副百花齐放的态势，通过社区的发展，WebAssembly 制定并发布了 WebAssembly System Interface 标准(简称 WASI)后，WebAssembly 的运行环境甚至可以获取到 io 等能力，可见不远的未来服务端也将成为下个WebAssembly 的战场。</p>
+<h2 id="生态工具链"><a href="#生态工具链" class="headerlink" title="生态工具链"></a>生态工具链</h2><p>在了解工具链前先认识下 LLVM(Low Level Virtual Machine) 它是一个可重用的编译器和工具链基础设施。它最初是作为编译器前端和优化器的框架而设计的，现在已经发展成为一个完整的编译器基础设施，支持多种编程语言和多个平台。LLVM 的设计目标是提供一个高度灵活的编译器基础设施，具有可重用性、可扩展性和性能优势。采用了模块化的架构将编译过程分为多个阶段，并使用中间表示(intermediate Representation，IR)来表示代码,这种设计使得 LLVM 可以在不同的编译器阶段进行优化、分析和转换，并且可以支持多种目标平台和编程语言如C&#x2F;C++、Swit、Rust 等，通过浏览器把 wasm 文件加载并将字节码继续编译为浏览器所运行的设备的机,器码使其运行。</p>
+<p>我们常见的工具有: Emscripten(C&#x2F;C++)，Wasm-pack(Rust)等，限于篇幅本文就只介绍最常用的Emscripten:<br>Emscripten 基于 LLVM libcxx 实现了一套能提供大部分 C&#x2F;C++ 标准库的能力，此外还支持多线程、库导入等方式将大部分 C&#x2F;C++ 工程无缝迁移到 WebAssembly 上。</p>
+<h2 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h2><p>老规矩，我们从 0 开始，以一个 helo worid 来进入 WebAssembly 世界(这里使用 C&#x2F;C++ 语言，Emscripten 工具，MacOS 进行阐述，其他工具和环境原理类似)</p>
+<ol>
+<li>前置工具，安装打工人套件: Git、CMake、Python 等</li>
+<li>安装Emscripten: <a target="_blank" rel="noopener" href="https://emscripten,org/docs/getting_started/downloads.html">https://emscripten,org/docs/getting_started&#x2F;downloads.html</a>;</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Get the emsdk repo</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/emscripten-core/emsdk.git</span><br><span class="line"><span class="comment"># Enter that directory</span></span><br><span class="line"><span class="built_in">cd</span> emsdk</span><br><span class="line"><span class="comment"># Fetch the latest version of the emsdk (not needed the first time you clone)9 </span></span><br><span class="line">git pull</span><br><span class="line"><span class="comment"># Download and install the latest SDk tools.</span></span><br><span class="line">./emsdk install latest</span><br><span class="line"><span class="comment"># Make the &quot;latest&quot; SDK &quot;active&quot; for the current user. (writes .emscripten file)</span></span><br><span class="line">./emsdk activate latest</span><br><span class="line"><span class="comment"># Activate PATH and other environment variables in the current terminal</span></span><br><span class="line"><span class="built_in">source</span> ./emsdk env.sh</span><br></pre></td></tr></table></figure>
+
+
+
+<ol start="3">
+<li>创建 hello.c 文件，示例代码:</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Hello World\n&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<ol start="4">
+<li>执行编译</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">emcc hello.c -o hello.html</span><br></pre></td></tr></table></figure>
+
+<p>编译后将生成一个 .wasm 文件，一个 js 胶水代码文件提供一个全局 Module 对象，封装了</p>
+<p>WebAssembly 的一系列操作方法; 以及一个 .htm l模板文件</p>
+<h3 id="进一步配置"><a href="#进一步配置" class="headerlink" title="进一步配置"></a>进一步配置</h3><p>接下来我们继续探索 Emscripten 强大的能力吧:</p>
+<p>导出 C++ 方法给到 js 层调用</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;emscripten/emscripten.h&gt;</span> <span class="comment">// 导入头文件</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Hello World\n&quot;</span>); </span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"><span class="comment">// 定义方法导出</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> _cplusplus</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EXTERN  extern <span class="string">&quot;c&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EXTERN</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 导出方法</span></span><br><span class="line">EXTERN EMSCRIPTEN KEEPALIVE <span class="type">int</span> <span class="title function_">sayHello</span><span class="params">(<span class="built_in">string</span> argc, <span class="type">char</span> ** argv)</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;sayHello called\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>执行编译后可以看到在.wasm文件中通过export 导出的方法，在js 胶水代码中也能看到私有方法</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var _sayHello = Module[<span class="string">&#x27;_sayHello&#x27;</span>] = createExportWrapper(<span class="string">&#x27;sayHello&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>既然是私有方法，肯定不希望外部直接调用，所以我们可以在编译时指定导出具体的 API:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">emcc -o hello,html hello.C -S NO EXIT RUNTIME=<span class="number">1</span> -S <span class="string">&quot;EXPORTED RUNTIME METHODS=[&#x27;ccall&#x27;]&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>在js中可以通过Module,ccall 调用该 API:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> result = <span class="title class_">Module</span>.<span class="title function_">ccall</span>(</span><br><span class="line">  <span class="string">&quot;sayHello&quot;</span>, <span class="comment">// name of C function</span></span><br><span class="line">  <span class="literal">null</span>, <span class="comment">// return type</span></span><br><span class="line">  <span class="literal">null</span>, <span class="comment">// argument types</span></span><br><span class="line">  <span class="literal">null</span>, <span class="comment">// arguments</span></span><br><span class="line">);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;result&#x27;</span>,result); <span class="comment">// result 0</span></span><br></pre></td></tr></table></figure>
+
+<p>同时，我们也可以指定 HTML 模板，在模板代码中使用 <code>&#123;&#123;&#123; SCRIPT&#125;&#125;&#125;</code> 匹配插入 <code>&lt;script async type=&quot;text/javascript&quot;src=&quot;hello.js&quot;&gt;&lt;/script&gt;</code> 可以结合前端语言进行页面展示。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!doctype <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en-us&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;utf-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;Content-Type&quot;</span> <span class="attr">content</span>=<span class="string">&quot;text/html; charset=utf-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Emscripten-Generated Code<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- &#123;&#123;&#123; SCRIPT &#125;&#125;&#125; --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">&quot;mybutton&quot;</span>&gt;</span>点击输入<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;mybutton&quot;</span>).<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>,<span class="function">()=&gt;</span> &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">const</span> result = <span class="title class_">Module</span>.<span class="title function_">ccall</span>(</span></span><br><span class="line"><span class="language-javascript">          <span class="string">&quot;sayHello&quot;</span>, <span class="comment">// name of c function</span></span></span><br><span class="line"><span class="language-javascript">          [<span class="string">&#x27;sting&#x27;</span>],  <span class="comment">// return type</span></span></span><br><span class="line"><span class="language-javascript">          [<span class="string">&#x27;sting&#x27;</span>],  <span class="comment">// argument types</span></span></span><br><span class="line"><span class="language-javascript">          [<span class="string">&#x27;Tom&#x27;</span>], <span class="comment">// arguments</span></span></span><br><span class="line"><span class="language-javascript">        ):</span></span><br><span class="line"><span class="language-javascript">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;result&#x27;</span>,result); <span class="comment">// 0</span></span></span><br><span class="line"><span class="language-javascript">      &#125;);</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>执行编译命令:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">emcc -o hello.html hello.c --shell-file demo/template.html -S NO EXIT RUNTIME=1 -S <span class="string">&quot;EXPORTED RUNTIME METHODS=[&#x27;ccall&#x27;]&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+<p>感受到 WebAssembly 的魅力了吗，接下来我们再看几个强大的 Emscripten 编译指令:</p>
+<ol>
+<li>WASM</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># WASM=0 生成 asm.js 格式(适用于 WebAssembly 不支持的情况)</span></span><br><span class="line"><span class="comment"># WASM=1 生成包含 wasm 格式</span></span><br><span class="line"><span class="comment"># WASM=2 asm.js 与 wasm 格式均生成，添加支持判定，优先使用 wasm 格式。</span></span><br><span class="line">-S WASM=1</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>ENVIRONMENT</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 设定当前的运行环境，避免生成的 js 文件中判定环境，并运行不同的代码</span></span><br><span class="line"><span class="comment"># web - web 浏览器运行环境。</span></span><br><span class="line"><span class="comment">#worker - web worker 支持的运行环境,</span></span><br><span class="line"><span class="comment"># node - Node 环境.</span></span><br><span class="line"><span class="comment"># shell -js 脚本运行环境，如 d8、jsc</span></span><br><span class="line"><span class="comment"># 如果为空则支持所有运行时环境</span></span><br><span class="line">-S ENVIRONMENT=<span class="string">&#x27;web&#x27;</span>; </span><br></pre></td></tr></table></figure>
+
+<p>3.内存模式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 指定内存的大小  </span></span><br><span class="line">-S INITIAL MEMORY=134217728</span><br><span class="line"><span class="comment"># 限制内存大小</span></span><br><span class="line">-S MAXIMUM MEMORY=134217728</span><br><span class="line"><span class="comment"># 是否内存会增长</span></span><br><span class="line">-S ALLOW MEMORY GROWTH=0/1</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>MODULARIZE</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导出模块名称，通过常和 MODULARIZE_INSTANCE / MODULARIZE 配合使用</span></span><br><span class="line">-S EXPORT NAME=<span class="string">&#x27;Module&#x27;</span>:</span><br><span class="line"><span class="comment"># 是否生成模块 instance 单粒，返回格式为:&#123;&#125;</span></span><br><span class="line">-S MODULARIZE INSTANCE=0</span><br><span class="line"><span class="comment"># 是否生成模块，返回 function 格式</span></span><br><span class="line">-S MODULARIZE=0;</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>EXPORT ES6</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用 ES6 模块导出而不是 UMD 导出进行导出。 必须为 ES6 导出启用 MODULARIZE。需要注意低版本浏览器可能不支持它。</span></span><br><span class="line">-S EXPORT ES6=1</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>preload-file</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 该命令可以以 preload 模式打包文件或者文件夹，通常可以指定较大的依赖文件或者文本(如.js、.bin 等)</span></span><br><span class="line"><span class="comment"># 执行 --preload-file 后将生成 .data 文件，C/C++ 代码可以通过 fopen 或 xhr 的方式加载并读取文件内容并执行，相比 --embed-file 效率高得多</span></span><br><span class="line">--preload-file hello.text</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>Emscripten 本文只列出我们在生产中几个常用的编译指令，更多功能可自行参阅官网说明。</p>
+<h2 id="项目实战"><a href="#项目实战" class="headerlink" title="项目实战"></a>项目实战</h2><p>最简单的方式就是在 HTML 或者 Reactue 等工程中使用，如通过以下指令进行编译</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mCC-S WASM=1 -S WASM_BIGINT -S ENVIRONMENT=Web -S MODULARIZE=1 -S EXPORT_ES6=1 -S USE_ES6_IMOPRT_META=1 -s EXPORET_NAME=<span class="string">&quot;loadWASM&quot;</span> -s EXPORT_RUNTIME_METHODS=<span class="string">&quot;[&#x27;ccal&#x27;]&quot;</span> -s EXPORT_FUNTIONS=<span class="string">&quot;[&#x27;_malloc&#x27;, &#x27;_free&#x27;]&quot;</span> --shell-file demo/template.html</span><br></pre></td></tr></table></figure>
+
+<p>在 hellojs 中我们可以看到 loadWASM 以具名方式导出:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> loadWASM = (<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">var</span> scriptDir = <span class="keyword">import</span>.<span class="property">meta</span>.<span class="property">url</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="keyword">function</span>(<span class="params">moduleArg=&#123;&#125;</span>)&#123;</span><br><span class="line"></span><br><span class="line">      <span class="comment">//  ..</span></span><br><span class="line">  )</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> loadWASM;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在 hello.html 则可以使用 ES6 方式导入</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span><span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;module&quot;</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">import</span> initModule <span class="keyword">from</span><span class="string">&quot;./video index.js&quot;</span>;</span></span><br><span class="line"><span class="language-javascript">    <span class="title function_">initModule</span>(<span class="title class_">Module</span>);</span></span><br><span class="line"><span class="language-javascript">  </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>更推荐使用以下方式，通过 Promise 保证在 js 加载完成后得到可用的 Module 对象，同时，WebAssembly 也提供了onRuntimeInitialized 生命周期来保证胶水代码初始化完成</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span><span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;module&quot;</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> loadWASM <span class="keyword">from</span><span class="string">&quot;./video index.js&quot;</span>;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="title function_">loadWASM</span>().<span class="title function_">then</span>(<span class="function"><span class="params">module</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="variable language_">window</span>.<span class="property">Module</span> = modute;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  &#125;);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>js 如何将参数传给 C&#x2F;C++，一般情况下 js 向 C&#x2F;C++ 传值可直接根据类型传即可:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// demo.js</span></span><br><span class="line"><span class="keyword">const</span> result = <span class="title class_">Module</span>.<span class="title function_">ccall</span>(</span><br><span class="line">  <span class="string">&quot;getResult&quot;</span>,   <span class="comment">// name of c function</span></span><br><span class="line">  <span class="literal">null</span>,         <span class="comment">// return type</span></span><br><span class="line">  [<span class="string">&#x27;number&#x27;</span>],  <span class="comment">// argument types</span></span><br><span class="line">  [<span class="number">111</span>]，      <span class="comment">// arguments</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>但在某些场景下，我们需要将json 字符串、二进制等大量数据传给 C&#x2F;C++，这时可以使用 WebAssembly 提供的 malloc 申请内存方式，将参数放在指针的内存中传递给 C&#x2F;C++:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">hello.c</span><br><span class="line"><span class="meta"># <span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta"># <span class="keyword">include</span> <span class="string">&lt;emscripten/emscripten.h&gt;</span></span></span><br><span class="line"><span class="comment">// int Main...</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">getResult</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* ptr)</span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;%s&quot;</span>，ptr)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// demo.js</span></span><br><span class="line"><span class="comment">// 序列化数据，字符串在C/C++ 中是一个以 0 结尾的字符数组</span></span><br><span class="line"><span class="keyword">const</span> jsonstr = <span class="title class_">Module</span>.<span class="title function_">intArrayFromString</span>(<span class="title class_">JSON</span>,<span class="title function_">stringify</span>(data)).<span class="title function_">concat</span>(<span class="number">0</span>);</span><br><span class="line"><span class="comment">// 分配内存空间</span></span><br><span class="line"><span class="keyword">const</span> ptr = <span class="title class_">Module</span>. <span class="title function_">malloc</span>(jsonstr.<span class="property">length</span>);</span><br><span class="line"><span class="comment">// 将数据存入新内存中</span></span><br><span class="line"><span class="title class_">Module</span>.<span class="property">HEAPU8</span>.<span class="title function_">set</span>(jsonstr, ptr);</span><br><span class="line"><span class="keyword">const</span> result = <span class="title class_">Module</span>.<span class="title function_">ccall</span>(</span><br><span class="line">  <span class="string">&quot;getResult&quot;</span>, <span class="comment">// name of c function</span></span><br><span class="line">  <span class="literal">null</span>, <span class="comment">// return type</span></span><br><span class="line">  [<span class="string">&#x27;number&#x27;</span>], <span class="comment">// argument types</span></span><br><span class="line">  [ptr]，<span class="comment">// arguments</span></span><br><span class="line">);</span><br><span class="line"><span class="comment">// 一定要记住释放</span></span><br><span class="line"><span class="title class_">Module</span>.<span class="title function_">_free</span>(ptr);</span><br></pre></td></tr></table></figure>
+
+<p>除了 js 将数据传给 C&#x2F;C++，反过来也有 C&#x2F;C++ 向 js 传 字符串等数据</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// demo.js</span></span><br><span class="line"><span class="comment">// 需要提前知道内存大小，可以使用 C/C++ 提供直接获取某个参数内存大小的方式，也可以通过约定的方式</span></span><br><span class="line"><span class="keyword">const</span> size = <span class="title class_">Module</span>.<span class="title function_">ccall</span>(<span class="string">&#x27;getSize&#x27;</span>,[<span class="string">&#x27;number&#x27;</span>], <span class="literal">null</span>, <span class="literal">null</span>);</span><br><span class="line"><span class="keyword">const</span> ptr=<span class="title class_">Module</span>. <span class="title function_">malloc</span>(size);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> result = <span class="title class_">Module</span>.<span class="title function_">ccall</span>(</span><br><span class="line">  <span class="string">&quot;getResult&quot;</span>, <span class="comment">// name of C function</span></span><br><span class="line">  <span class="literal">null</span>,<span class="comment">// return type</span></span><br><span class="line">  [<span class="string">&#x27;number&#x27;</span>], <span class="comment">// argument types</span></span><br><span class="line">  [ptr]，<span class="comment">// arguments</span></span><br><span class="line">);</span><br><span class="line"><span class="comment">// 取值</span></span><br><span class="line"><span class="keyword">const</span> resBuffer = <span class="title class_">Module</span>.<span class="property">HEAPU8</span>.<span class="title function_">subarray</span>(ptr, ptr + size);</span><br><span class="line"><span class="keyword">const</span> str = <span class="keyword">new</span> <span class="title class_">TextDecoder</span>().<span class="title function_">decode</span>(resBuffer);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(str);</span><br><span class="line"><span class="comment">// 一定要记住释放16 Module. free(ptr);</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>一定要记住一个原则: 谁分配内存，就由谁释放内存!!! 不管什么程序语言，内存生命周期基本是一致的: 分配你所需要的内存、使用分配到的内存(读、写)、不需要时将其释放\归还。在生产环境中，内存泄露的问题较难排除，需要在开发时进行严格要求。</p>
+<h3 id="深入"><a href="#深入" class="headerlink" title="深入"></a>深入</h3><p>–preload-file ，在生产环境中，建议使用预加载的方式将一些依赖模块或者文件前面提到了一个指令:进行管理，使用的 js 胶水层会通过 xhr 的方式进行装载，既能加快加载效率，也能减少打包体积:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">fetchRemotePackage</span> (<span class="params">packageName, packageSize, callback, errBack</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> xhr = <span class="keyword">new</span> <span class="title class_">XMLHttpRequest</span>();</span><br><span class="line">  xhr.<span class="title function_">open</span>(<span class="string">&#x27;GET&#x27;</span>, packageName, <span class="literal">true</span>);</span><br><span class="line">  xhr.<span class="property">responseType</span> =<span class="string">&#x27;arraybuffer&#x27;</span>;</span><br><span class="line">  xhr.<span class="property">onprogress</span> =<span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> url = packageName;</span><br><span class="line">    <span class="keyword">var</span> size = packageSize;</span><br><span class="line">    <span class="keyword">if</span> (event.<span class="property">total</span>) &#123;</span><br><span class="line">      size = event.<span class="property">total</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (event.<span class="property">loaded</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!xhr.<span class="property">addedTotal</span>) &#123;</span><br><span class="line">        xhr.<span class="property">addedTotal</span> = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="title class_">Module</span>[<span class="string">&#x27;dataFileDownloads&#x27;</span>]) &#123;</span><br><span class="line">          <span class="title class_">Module</span>[<span class="string">&#x27;dataFileDownloads&#x27;</span>] = &#123;&#125;;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="title class_">Module</span>.<span class="property">dataFileDownloads</span>[url] = &#123;</span><br><span class="line">          <span class="attr">total</span>: size,</span><br><span class="line">          <span class="attr">loaded</span>: <span class="number">0</span>,</span><br><span class="line">        &#125;;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="title class_">Module</span>.<span class="property">dataFileDownloads</span>[url].<span class="property">loaded</span> = event.<span class="property">loaded</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">var</span> total = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">var</span> loaded = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">var</span> num = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">var</span> download <span class="keyword">in</span> <span class="title class_">Module</span>.<span class="property">dataFileDownloads</span>) &#123;</span><br><span class="line">        <span class="keyword">var</span> data =<span class="title class_">Module</span>.<span class="property">dataFileDownloads</span>[download];</span><br><span class="line">        total += data.<span class="property">total</span>;</span><br><span class="line">        loaded += data.<span class="property">loaded</span>;</span><br><span class="line">        num++;</span><br><span class="line">      &#125;</span><br><span class="line">      total = <span class="title class_">Math</span>.<span class="title function_">ceil</span>(total * <span class="title class_">Module</span>.<span class="property">expectedDataFileDownloads</span> / num);</span><br><span class="line">      <span class="keyword">if</span> (<span class="title class_">Module</span>[<span class="string">&#x27;setStatus&#x27;</span>]) &#123;</span><br><span class="line">        <span class="title class_">Module</span>[<span class="string">&#x27;setStatus&#x27;</span>](<span class="string">`Downloading data... (<span class="subst">$&#123;loader&#125;</span>/<span class="subst">$&#123;total&#125;</span>)`</span>); </span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!<span class="title class_">Module</span>.<span class="property">dataFileDownloads</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="title class_">Module</span>[<span class="string">&#x27;setStatus&#x27;</span>])&#123;</span><br><span class="line">        <span class="title class_">Module</span>[<span class="string">&#x27;setStatus&#x27;</span>](<span class="string">&#x27;Downloading data...&#x27;</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    xhr.<span class="property">onerror</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&quot;NetworkError for:&quot;</span> + packageName):</span><br><span class="line">    &#125;</span><br><span class="line">    xhr.<span class="property">onload</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (xhr.<span class="property">status</span> ==<span class="number">200</span> || xhr,status ==<span class="number">304</span> || xhr.<span class="property">status</span> == <span class="number">206</span> || (xhr.<span class="property">status</span> === <span class="number">0</span> &amp;&amp; xhr.<span class="property">response</span>)) &#123;</span><br><span class="line">        packageData=xhr.<span class="property">response</span>;</span><br><span class="line">        <span class="title function_">callback</span>(packageData);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(xhr.<span class="property">statusText</span>+<span class="string">&quot;:&quot;</span>+ xhr.<span class="property">responseURL</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    xhr.<span class="title function_">send</span>(<span class="literal">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">handleError</span>(<span class="params">error</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">error</span>(error);</span><br><span class="line">  <span class="keyword">throw</span> error;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> fetchedCallback = <span class="literal">null</span>;</span><br><span class="line"><span class="keyword">var</span> fetched = <span class="title class_">Module</span>[<span class="string">&#x27;getPreloadedPackage&#x27;</span>] ? <span class="title class_">Module</span>[<span class="string">&#x27;getPreloadedPackage&#x27;</span>](<span class="variable constant_">REMOTE_PACKAGE_NAME</span>, <span class="variable constant_">REMOTE_PACKAGE_SIZE</span>) : <span class="literal">null</span>; </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!fetched) &#123;</span><br><span class="line">  <span class="title function_">fetchRemotePackage</span>(<span class="variable constant_">REMOTE_PACKAGE_NAME</span>, <span class="variable constant_">REMOTE_PACKAGE_SIZE</span>, <span class="keyword">function</span>(<span class="params">data</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (fetchedCallback) &#123;</span><br><span class="line">      <span class="title function_">fetchedCallback</span>(data);</span><br><span class="line">      fetchedCallback = <span class="literal">null</span>;</span><br><span class="line">    &#125; esle &#123;</span><br><span class="line">      fetched = data;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, handleError);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在工程中使用时记得将其构建为静态资源文件</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">CopyPlugin</span> = <span class="built_in">require</span>(<span class="string">&#x27;copy-webpack-plugin&#x27;</span>);</span><br><span class="line"><span class="variable language_">module</span>,<span class="built_in">exports</span> =<span class="function">()=&gt;</span>(&#123;</span><br><span class="line">  <span class="attr">plugins</span>: [</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">CopyPlugin</span>(&#123;</span><br><span class="line">      <span class="attr">patterns</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">from</span>: path.<span class="title function_">resolve</span>(__dirname, <span class="string">&#x27;src/wasm/hello.data&#x27;</span>),</span><br><span class="line">          <span class="attr">to</span>: path.<span class="title function_">resolve</span>(__dirname, <span class="string">&#x27;dist/hello.data&#x27;</span>),</span><br><span class="line">        &#125;,</span><br><span class="line">      ],</span><br><span class="line">    &#125;)</span><br><span class="line">  ]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>如果你是通过 npm 包等形式发布 bundle 文件，可以通过修改胶水代码中的 <code>REMOTE_PACKAGE_BASE</code> 参数替换 <code>.data</code> 文件域名（比如发布到 cdn）来加速静态资源的下载。</p>
+<h2 id="在小程序中使用"><a href="#在小程序中使用" class="headerlink" title="在小程序中使用"></a>在小程序中使用</h2><p>除了在浏览器容器中使用 WebAssembly，各小程序厂商如微信、支付宝等都已支持在各自的小程序中使用WebAssembly。但是在各小程序中进行了不同程度的封装，接下来看看如何在微信小程序中将 WebAssembly引</p>
+<p>首先看下微信小程序官方的异同描述:</p>
+<p>WXWebAssembly.instantiate(path, imports)</p>
+<p>和标准 WebAssembly.instantiate 类似，差别是第一个参数只接受一个字符串类型的代码包路径，指向代码包内 .wasm 文件</p>
+<p>与 WebAssembly 的异同</p>
+<p>1、WxWebAssembly.instantiate(path,imports)方法，path为代码包内路径(支持.wasm和.wasm.br后缀)</p>
+<p>2、支持 WxWebAssembly.Memory</p>
+<p>3.支持 WxWebAssembly.Table</p>
+<p>4、支持WXWebAssembly.Global</p>
+<p>5、expont 支持函数、Memory、Table,iOS 平台暂不支持 Global</p>
+<p>但是，要想在微信小程序中运行 WebAssembly，只看上面的描述远不能简单实现接入，必须要对 js 胶水层的进行一定的改造来完成接入</p>
+<ol>
+<li><p>在微信小程序中 <code>import.meta.url</code> 获取不到，可以直接改为 “&#x2F;“，注意 <code>.wasm</code> 文件在微信小程序中的文件路径即可:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hello.js</span></span><br><span class="line">wasmBinaryFile = <span class="keyword">new</span> <span class="title function_">URL</span>(<span class="string">&#x27;hello.wasm&#x27;</span>, <span class="keyword">import</span>.<span class="property">meta</span>.<span class="property">url</span>).<span class="property">href</span>;</span><br><span class="line">wasmBinaryFile =<span class="string">&#x27;hello.wasm&#x27;</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>微信小程序中提供的是 WXWebAssembly，可以定义一个全局变量</p>
+</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> isWechat = <span class="keyword">typeof</span> wx== <span class="string">&#x27;object&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="title class_">WebAssembly</span> =isWechat ? <span class="title class_">WXWebAssembly</span> : <span class="title class_">WebAssembly</span>;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><p>微信小程序不支持 xhr，需使用 <code>wx.request</code> 代替:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">fetchRemotePackage</span>(<span class="params">packageName, packageSize, callback, errBack</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (isWechat) &#123;</span><br><span class="line">    wx.<span class="title function_">request</span>(&#123;</span><br><span class="line">    <span class="attr">url</span>: packageName,</span><br><span class="line">    <span class="attr">responseType</span>: <span class="string">&#x27;arraybuffer&#x27;</span>,</span><br><span class="line">    <span class="attr">success</span>: <span class="keyword">function</span>(<span class="params">packageData</span>)&#123;</span><br><span class="line">      <span class="title function_">callback</span>(packageData);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>WXWebAssembly.instantiate(path,imports) 处理：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">instantiateArrayBuffer</span>(<span class="params">binaryFile, imports, receiver, info</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> r;</span><br><span class="line">  <span class="keyword">if</span> (isWechat) &#123;</span><br><span class="line">    r=<span class="title class_">WebAssembly</span>.<span class="title function_">instantiate</span>(<span class="string">&#x27;/&#x27;</span>+ wasmBinaryFile, info);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    r= <span class="title function_">getBinaryPromise</span>().<span class="title function_">then</span>(<span class="keyword">function</span>(<span class="params">binary</span>)&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="title class_">WebAssembly</span>.<span class="title function_">instantiate</span>(binary, info);</span><br><span class="line">    &#125;).<span class="title function_">then</span>(<span class="keyword">function</span>(<span class="params">instance</span>)&#123;</span><br><span class="line">      <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> r.<span class="title function_">then</span>(receiver, <span class="function">(<span class="params">reason</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">err</span>(<span class="string">`failed to asynchronously prepare wasm: <span class="subst">$&#123;reason&#125;</span>`</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Warn on some common problems.</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="title function_">isFileURI</span>(wasmBinaryFile)) &#123;</span><br><span class="line">      <span class="title function_">err</span>(<span class="string">`warning: Loading from a file URl (<span class="subst">$&#123;wasmBinaryFile&#125;</span>) is not supported in mos`</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="title function_">abort</span>(reason);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其他，如:</p>
+</li>
+</ol>
+<p>  a. <code>performance.now</code> 不支持，没有特殊需求可以使用 <code>Date.now</code> 替代</p>
+<p>  b. Document、TextDecoder、TextEncoder 等不支持，可以写代码 hack 掉或者使用第三方库替代。在复杂的前端工程中引入 WebAssembly 可能会涉及到更多的工作，需要充分评估需求以及现有的代码，并确定哪些部分可以从引入 WebAssembly 中受益; 当然，必须注意代码的兼容性和性能测试，以保证引入 WebAssembly 不会引入新的问题。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>在需要执行高性能计算和数据密集型任务的场景中 WebAssembly 可以帮助我们实现更快的视频解码和编码;也可以帮助我们实现更快的游戏加载和渲染;甚至在安全防控方面也可以帮助我们实现更高效的安全检测和攻击防御以及未来结合大模型等在端上进行机器学习。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://speronis.github.io/2024/03/05/WebAssembly%E9%80%9F%E9%80%9A/" data-id="cm6rz8xo70000nwsydwkz6r1p" data-title="WebAssembly速通" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%A7%86%E9%87%8E%E5%88%86%E4%BA%AB/" rel="tag">视野分享</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/02/05/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          Hello World
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/12/09/web%20%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE%E4%B8%80%E6%9D%86%E5%88%B0%E5%BA%95/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">web视频播放一杆到底</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A7%86%E9%87%8E%E5%88%86%E4%BA%AB/" rel="tag">视野分享</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/%E8%A7%86%E9%87%8E%E5%88%86%E4%BA%AB/" style="font-size: 10px;">视野分享</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/03/">March 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2025/02/05/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2024/03/05/WebAssembly%E9%80%9F%E9%80%9A/">WebAssembly速通</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/09/web%20%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE%E4%B8%80%E6%9D%86%E5%88%B0%E5%BA%95/">web视频播放一杆到底</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 SPERONIS<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
