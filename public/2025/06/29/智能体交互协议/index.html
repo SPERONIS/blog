@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>SPERONIS`s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="前言最新在团队各个业务中开始落地 Agent，发现在于合作方讨论时存在或多或少的信息 GAP，不可否认现在 AI 行业发展已经达到每周甚至每天都有新的技术或者概念出来，学都学不过来还别说应用了。本文对于 Agent 场景落地过程中涉及到的跟前后端、设计、PD、甚至运营都要对齐的一些信息进行一些思考和总结。 AI Copilot 和 AI Agent1.1. AI Copilot需要用户的引导，更多">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SPERONIS&#96;s Blog">
+<meta property="og:url" content="https://speronis.github.io/2025/06/29/%E6%99%BA%E8%83%BD%E4%BD%93%E4%BA%A4%E4%BA%92%E5%8D%8F%E8%AE%AE/index.html">
+<meta property="og:site_name" content="SPERONIS&#96;s Blog">
+<meta property="og:description" content="前言最新在团队各个业务中开始落地 Agent，发现在于合作方讨论时存在或多或少的信息 GAP，不可否认现在 AI 行业发展已经达到每周甚至每天都有新的技术或者概念出来，学都学不过来还别说应用了。本文对于 Agent 场景落地过程中涉及到的跟前后端、设计、PD、甚至运营都要对齐的一些信息进行一些思考和总结。 AI Copilot 和 AI Agent1.1. AI Copilot需要用户的引导，更多">
+<meta property="og:locale">
+<meta property="og:image" content="https://github.com/SPERONIS/ciza1/blob/main/Pasted%20image%2020250629111738.png?raw=true">
+<meta property="article:published_time" content="2025-06-29T11:05:45.363Z">
+<meta property="article:modified_time" content="2025-06-29T11:20:46.256Z">
+<meta property="article:author" content="SPERONIS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/SPERONIS/ciza1/blob/main/Pasted%20image%2020250629111738.png?raw=true">
+  
+    <link rel="alternate" href="/atom.xml" title="SPERONIS`s Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">SPERONIS`s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Suche"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://speronis.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-智能体交互协议" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/06/29/%E6%99%BA%E8%83%BD%E4%BD%93%E4%BA%A4%E4%BA%92%E5%8D%8F%E8%AE%AE/" class="article-date">
+  <time class="dt-published" datetime="2025-06-29T11:05:45.363Z" itemprop="datePublished">2025-06-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最新在团队各个业务中开始落地 Agent，发现在于合作方讨论时存在或多或少的信息 GAP，不可否认现在 AI 行业发展已经达到每周甚至每天都有新的技术或者概念出来，学都学不过来还别说应用了。本文对于 Agent 场景落地过程中涉及到的跟前后端、设计、PD、甚至运营都要对齐的一些信息进行一些思考和总结。</p>
+<h2 id="AI-Copilot-和-AI-Agent"><a href="#AI-Copilot-和-AI-Agent" class="headerlink" title="AI Copilot 和 AI Agent"></a>AI Copilot 和 AI Agent</h2><h3 id="1-1-AI-Copilot"><a href="#1-1-AI-Copilot" class="headerlink" title="1.1. AI Copilot"></a>1.1. AI Copilot</h3><p>需要用户的引导，更多地起辅助作用，依赖清晰明确的提示（prompt）来发挥作用。人类与 AI 的工作量相当，AI 根据人类的指令完成初稿，人类负责设定目标、修改调整并最终确认。</p>
+<p><img src="https://github.com/SPERONIS/ciza1/blob/main/Pasted%20image%2020250629111738.png?raw=true" alt="[Pasted image 20250629111738.png]"></p>
+<h3 id="1-2-AI-Agent"><a href="#1-2-AI-Agent" class="headerlink" title="1.2. AI Agent"></a>1.2. AI Agent</h3><p>具有较强的自主性，可以根据目标自主思考和行动，无需人类的详细指导。它能够独立完成 任务拆分、工具选择、进度控制，并在实现目标后自主结束工作。<br>![[Pasted image 20250629111826.png]]<br>![[Pasted image 20250629111915.png]]</p>
+<h3 id="1-3-Agentic-AI"><a href="#1-3-Agentic-AI" class="headerlink" title="1.3. Agentic AI"></a>1.3. Agentic AI</h3><blockquote>
+<p>《AI Agents vs. Agentic AI: A Conceptual Taxonomy, Applications and Challenges》 <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2505.10468">https://arxiv.org/pdf/2505.10468</a></p>
+</blockquote>
+<p>即高度自主决策 AI，主要体现在多 Agent 的高效协作、高级的推理&amp;计划并对任务进行有效 分解、共享的上下文内存、高度的协作机制，更加强调社会行为和分布式智能。</p>
+<h2 id="1-4-小结"><a href="#1-4-小结" class="headerlink" title="1.4. 小结"></a>1.4. 小结</h2><table>
+<thead>
+<tr>
+<th>特性</th>
+<th><strong>AI Copilot</strong></th>
+<th><strong>AI Agent</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>核心角色</strong></td>
+<td>辅助者 (你的智能助⼿)</td>
+<td>执⾏者 (可独⽴⾏动的智能体)</td>
+</tr>
+<tr>
+<td><strong>目标</strong></td>
+<td>增强⼈类能⼒，提⾼效率</td>
+<td>⾃主完成任务</td>
+</tr>
+<tr>
+<td><strong>⾃主级别</strong></td>
+<td>低：依赖⼈类指令和决策</td>
+<td>⾼：可⾃主规划、决策、执⾏</td>
+</tr>
+<tr>
+<td><strong>交互⽅式</strong></td>
+<td>对话式交互（问答、建议、实时协作）</td>
+<td>可后台运⾏，⽆需持续交互</td>
+</tr>
+<tr>
+<td><strong>任务范围</strong></td>
+<td>单⼀任务 &#x2F; 即时响应</td>
+<td>复杂任务链（多步骤、跨⼯具）</td>
+</tr>
+<tr>
+<td><strong>是否拆解任务</strong></td>
+<td>通常不主动拆解任务</td>
+<td>主动拆解任务为⼦⽬标</td>
+</tr>
+<tr>
+<td><strong>应⽤</strong></td>
+<td>GitHub Copilot、Aone Copilot</td>
+<td>AutoGPT, Manus</td>
+</tr>
+</tbody></table>
+<p>![[Pasted image 20250629164851.png]]</p>
+<h2 id="二、-智能体交互"><a href="#二、-智能体交互" class="headerlink" title="二、 智能体交互"></a>二、 智能体交互</h2><h3 id="2-1-什么是智能体交互"><a href="#2-1-什么是智能体交互" class="headerlink" title="2.1. 什么是智能体交互"></a>2.1. 什么是智能体交互</h3><p>智能体交互式解决的是如何连接：人 + 智能体 + 计算机，其包含了 Copilot 的交互形态 + Agent 的执行内核。智能体交互涉及单智能体与多智能体之间的协作、人机交互以及环境互 动等多个层面。从风控产品视角来说就是通过友好的交互帮助运营&#x2F;产研与智能体有更好的协同。</p>
+<h3 id="2-2-智能体交互方式"><a href="#2-2-智能体交互方式" class="headerlink" title="2.2. 智能体交互方式"></a>2.2. 智能体交互方式</h3><ul>
+<li>常见的 4 种交互方式： CopilotPopup，在页面通过浮层方式弹出交互对话框</li>
+<li>CopilotSidebar，在页面左侧平行位置展示交互对话框</li>
+<li>CopilotChat，沉浸式对话界面 </li>
+<li>其他如 HeadlessUI、以及 CopilotChat 与 CopilotSidebar 混合的形式。</li>
+<li>Answer 回复区域 </li>
+<li>Analysis 分析结果区域</li>
+<li>Question 提问区域</li>
+<li>DeepAnalysis 深度分析结果区域 </li>
+<li>除此之外，html 等信息需要快速转化成用户运行环境上下文</li>
+</ul>
+<h2 id="2-4-交互协议"><a href="#2-4-交互协议" class="headerlink" title="2.4. 交互协议"></a>2.4. 交互协议</h2><p>工具、Agent、人之前进行交互可通过协议来降低成本、提升扩展性和安全性。目前业界对 工具 + LLM 之间使用 MCP 协议具有一定的共识，Agent + Agent 之间是否需要特定的协议 还有一定的争议，Google 等厂已经设计了 A2A 的协议；而到了 Agent + 人之间的交互协议 则需要使用 AG-UI 协议来进行交互。<br>![[Pasted image 20250629112310.png]]</p>
+<h5 id="MCP"><a href="#MCP" class="headerlink" title="MCP"></a>MCP</h5><p>MCP（Model Context Protocol，模型上下文协议），由 Anthropic 于 2024 年底提出，旨在 解决 AI 系统与外部工具、数据源集成时的碎片化和高成本问题。<br>![[Pasted image 20250629112346.png]]</p>
+<h4 id="A2A"><a href="#A2A" class="headerlink" title="A2A"></a>A2A</h4><p>谷歌在 2025 年 4 月 9 日的 Google Cloud Next 25 大会上正式开源 A2A 协议，并联合 50 余家科技企业（如 Salesforce、SAP、埃森哲等）共同推动生态建设。A2A 协议基于 HTTP&#x2F;JSON-RPC 等通用标准，支持智能体间的能力发现、任务管理和多模态交互，目标是 解决跨平台智能体协作的 “孤岛” 问题。微软在 2025 年 5 月宣布 Azure AI Foundry 和 Copilot Studio 支持 A2A 协议，并与谷歌合作开发扩大该协议的应用范围。<br>![[Pasted image 20250629112418.png]]</p>
+<p>![[Pasted image 20250629112427.png]]<br>![[Pasted image 20250629112439.png]]</p>
+<p>Agent注册：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span> </span><br><span class="line">	<span class="attr">&quot;capabilities&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;streaming&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span> <span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line">	<span class="attr">&quot;defaultInputModes&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;text&quot;</span> <span class="punctuation">]</span><span class="punctuation">,</span> </span><br><span class="line">	<span class="attr">&quot;defaultOutputModes&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span> <span class="string">&quot;text&quot;</span> <span class="punctuation">]</span><span class="punctuation">,</span> </span><br><span class="line">	<span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;提供天气相关的查询功能&quot;</span><span class="punctuation">,</span></span><br><span class="line">	 <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;天气 Agent&quot;</span><span class="punctuation">,</span> </span><br><span class="line">	 <span class="attr">&quot;skills&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span> </span><br><span class="line">	 <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://aa.com:1000&quot;</span><span class="punctuation">,</span> </span><br><span class="line">	 <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1.0.0&quot;</span></span><br><span class="line">	<span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>请求体中的 message：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span> </span><br><span class="line">	<span class="attr">&quot;contextId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ssdasdas-dasd-sdasdasd-3qdq-45h3rthey5&quot;</span><span class="punctuation">,</span> </span><br><span class="line">	<span class="attr">&quot;kind&quot;</span><span class="punctuation">:</span> <span class="string">&quot;message&quot;</span><span class="punctuation">,</span> </span><br><span class="line">	<span class="attr">&quot;messageId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;rh3renfb-2rqdasasdg-5hrtytu-j6urejhs&quot;</span><span class="punctuation">,</span> </span><br><span class="line">	<span class="attr">&quot;parts&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span> </span><br><span class="line">		<span class="punctuation">&#123;</span> </span><br><span class="line">			<span class="attr">&quot;kind&quot;</span><span class="punctuation">:</span> <span class="string">&quot;text&quot;</span><span class="punctuation">,</span> </span><br><span class="line">			<span class="attr">&quot;text&quot;</span><span class="punctuation">:</span> <span class="string">&quot;杭州今天的天气怎么样？&quot;</span></span><br><span class="line">		<span class="punctuation">&#125;</span></span><br><span class="line">	<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;user&quot;</span> </span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>返回结果中的 Artifacts（请求 Agent 返回的产物）:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">[</span> </span><br><span class="line">	<span class="punctuation">&#123;</span> </span><br><span class="line">		<span class="attr">&quot;artifactId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;dasd1-g24gwevdf-45yrwgreu-6i6rjtyerg&quot;</span><span class="punctuation">,</span> </span><br><span class="line">		<span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span> </span><br><span class="line">		<span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;天气查询结果&quot;</span><span class="punctuation">,</span> </span><br><span class="line">		<span class="attr">&quot;parts&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span> </span><br><span class="line">			<span class="attr">&quot;kind&quot;</span><span class="punctuation">:</span> <span class="string">&quot;text&quot;</span><span class="punctuation">,</span> </span><br><span class="line">			<span class="attr">&quot;text&quot;</span><span class="punctuation">:</span> <span class="string">&quot;今天杭州天气晴朗，平均气温 26 摄氏度&quot;</span></span><br><span class="line">		<span class="punctuation">&#125;</span><span class="punctuation">]</span></span><br><span class="line">	<span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+
+<p>返回结果中的 Task（被调用 Agent 根据请求所生成的任务）:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span> </span><br><span class="line">	<span class="attr">&quot;artifacts&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span>...<span class="punctuation">&#125;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;contenxtId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;313rt320det20-4grbwtyh-n3ty35tq-4yhraefqf&quot;</span><span class="punctuation">,</span> </span><br><span class="line">	<span class="attr">&quot;history&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span>...<span class="punctuation">&#125;</span><span class="punctuation">]</span><span class="punctuation">,</span> </span><br><span class="line">	<span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;34erfqqet24yghbrw6-46t24g4-45wvdafad-efge&quot;</span><span class="punctuation">,</span> </span><br><span class="line">	<span class="attr">&quot;kind&quot;</span><span class="punctuation">:</span> <span class="string">&quot;task&quot;</span><span class="punctuation">,</span> </span><br><span class="line">	<span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;state&quot;</span><span class="punctuation">:</span> <span class="string">&quot;completed&quot;</span> <span class="punctuation">&#125;</span> </span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="AG-UI"><a href="#AG-UI" class="headerlink" title="AG-UI"></a>AG-UI</h3><p>AG-UI 通过开放协议标准化了前端应用与 AI Agent 的连接方式。可将其视为 AI 驱动系统的 通用翻译器，无论 Agent 使用哪种语言，AG-UI 都能确保流畅的沟通。AG-UI 帮助开发人员 构建需要实时交互、实时状态流和人机协作的下一代 AI 工作流程。明确且专注于 Agent 与 用户交互层。</p>
+<h2 id="三、-AG-UI-协议详解"><a href="#三、-AG-UI-协议详解" class="headerlink" title="三、 AG-UI 协议详解"></a>三、 AG-UI 协议详解</h2><blockquote>
+<p>社区已经有 AG-UI 相关的项并具备定的共识：<a target="_blank" rel="noopener" href="https://docs.ag-ui.com/introduction">https://docs.ag-ui.com/introduction</a><br>![[Pasted image 20250629113101.png]]</p>
+</blockquote>
+<p>注： AG-UI Client：通用的通信客户端（如 HttpAgent）或用于连接现有协议的专用客户端。</p>
+<h3 id="3-1-Events"><a href="#3-1-Events" class="headerlink" title="3.1. Events"></a>3.1. Events</h3><p>事件是 Agent 和前端之间通信的基本单元，可实现实时、结构化的交互。</p>
+<h3 id="3-2-Agents"><a href="#3-2-Agents" class="headerlink" title="3.2. Agents"></a>3.2. Agents</h3><p>Agents 是 AG-UI 协议中处理请求并生成响应的核心组件。可以让前端应用而无需考虑底层 实现，能通过标准的接口与 AI 服务进行通信。</p>
+<h3 id="3-3-Message"><a href="#3-3-Message" class="headerlink" title="3.3. Message"></a>3.3. Message</h3><p>消息遵循与供应商无关的格式，确保在保持一致结构的同时兼容不同的 LLM。使应用可以在 不同的模型厂商（如 OpenAI、Anthropic 或自定义模型）之间切换，而无需更改客户端实 现。<br>基本消息结构：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> <span class="title class_">BaseMessage</span> &#123;</span><br><span class="line"> <span class="attr">id</span>: <span class="built_in">string</span> <span class="comment">// 唯一的消息 ID</span></span><br><span class="line"> <span class="attr">role</span>: <span class="built_in">string</span> <span class="comment">// 角色, system | user | assistant | tool</span></span><br><span class="line"> <span class="attr">content</span>?: <span class="built_in">string</span> <span class="comment">// 内容（支持 Markdown）</span></span><br><span class="line"> <span class="attr">name</span>?: <span class="built_in">string</span> <span class="comment">// 可选，发送消息的来源</span></span><br><span class="line"> <span class="attr">toolCalls</span>: <span class="title class_">ToolCall</span>[], <span class="comment">// 可选，assistant 的工具调用配置</span></span><br><span class="line"> <span class="attr">toolCallId</span>: <span class="built_in">string</span>，<span class="comment">// 可选，工具调用的结果</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>举例：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 对话记录</span></span><br><span class="line">[</span><br><span class="line"> <span class="comment">// 用户 query</span></span><br><span class="line"> &#123;</span><br><span class="line">	 <span class="attr">id</span>: <span class="string">&quot;msg_1&quot;</span>,</span><br><span class="line">	 <span class="attr">role</span>: <span class="string">&quot;user&quot;</span>,</span><br><span class="line">	 <span class="attr">content</span>: <span class="string">&quot;杭州今天天气如何?&quot;</span>,</span><br><span class="line"> &#125;,</span><br><span class="line"> <span class="comment">// LLM 返回工具调用消息</span></span><br><span class="line"> &#123;</span><br><span class="line">	 <span class="attr">id</span>: <span class="string">&quot;msg_2&quot;</span>,</span><br><span class="line">	 <span class="attr">role</span>: <span class="string">&quot;assistant&quot;</span>,</span><br><span class="line">	 <span class="attr">content</span>: <span class="string">&quot;让我为你查询今天杭州的天气&quot;</span>,</span><br><span class="line">	 <span class="attr">toolCalls</span>: [</span><br><span class="line">	 &#123;</span><br><span class="line">		 <span class="attr">id</span>: <span class="string">&quot;call_1&quot;</span>,</span><br><span class="line">		 <span class="attr">type</span>: <span class="string">&quot;function&quot;</span>,</span><br><span class="line">		 <span class="attr">function</span>: &#123;</span><br><span class="line">			 <span class="attr">name</span>: <span class="string">&quot;get_weather&quot;</span>,</span><br><span class="line">			 <span class="attr">arguments</span>: <span class="string">&#x27;&#123;&quot;location&quot;: &quot;杭州&quot;, &quot;unit&quot;: &quot;摄氏度&quot;&#125;&#x27;</span>,</span><br><span class="line">		 &#125;,</span><br><span class="line">	 &#125;],</span><br><span class="line"> &#125;,</span><br><span class="line"> <span class="comment">// 工具调用结果给到 LLM</span></span><br><span class="line"> &#123;</span><br><span class="line">	 <span class="attr">id</span>: <span class="string">&quot;result_1&quot;</span>,</span><br><span class="line">	 <span class="attr">role</span>: <span class="string">&quot;tool&quot;</span>,</span><br><span class="line">	 <span class="attr">content</span>: <span class="string">&#x27;&#123;&quot;temperature&quot;: 22, &quot;condition&quot;: &quot;晴天&quot;, &quot;humidity&quot;: 25&#125;&#x27;</span>,</span><br><span class="line">	 <span class="attr">toolCallId</span>: <span class="string">&quot;call_1&quot;</span>,</span><br><span class="line"> &#125;,</span><br><span class="line"> <span class="comment">// 大模型理解结果并返回</span></span><br><span class="line"> &#123;</span><br><span class="line">	 <span class="attr">id</span>: <span class="string">&quot;msg_3&quot;</span>,</span><br><span class="line">	 <span class="attr">role</span>: <span class="string">&quot;assistant&quot;</span>,</span><br><span class="line">	 <span class="attr">content</span>: <span class="string">&quot;杭州今天是晴天&quot;</span></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-4-State"><a href="#3-4-State" class="headerlink" title="3.4.State"></a>3.4.State</h3><p>状态管理可实现Agent与前端应⽤之间的实时同步、状态共享和更新机制。</p>
+<h3 id="3-5-Tools"><a href="#3-5-Tools" class="headerlink" title="3.5. Tools"></a>3.5. Tools</h3><p>⼯具，即前端应⽤的 UI 组件，动作等</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> <span class="title class_">Tool</span> &#123;</span><br><span class="line"><span class="attr">name</span>: <span class="built_in">string</span> <span class="comment">// 工具名称</span></span><br><span class="line"><span class="attr">description</span>: <span class="built_in">string</span> <span class="comment">// 对工具的自然语言描述</span></span><br><span class="line"><span class="attr">parameters</span>: &#123;</span><br><span class="line">	 <span class="comment">// 工具的参数</span></span><br><span class="line">	<span class="attr">type</span>: <span class="string">&quot;object&quot;</span></span><br><span class="line">	 <span class="attr">properties</span>: &#123;</span><br><span class="line">		<span class="comment">// 具体的参数配置</span></span><br><span class="line">	&#125;</span><br><span class="line">	 <span class="attr">required</span>: <span class="built_in">string</span>[] <span class="comment">// 必填的参数</span></span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>举例：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 前端工具定义</span></span><br><span class="line"><span class="keyword">const</span> userConfirmationTool = &#123;</span><br><span class="line"> <span class="attr">name</span>: <span class="string">&quot;confirmAction&quot;</span>,</span><br><span class="line"> <span class="attr">description</span>: <span class="string">&quot;Ask the user to confirm a specific action before proceeding&quot;</span>,</span><br><span class="line">	 <span class="attr">parameters</span>: &#123;</span><br><span class="line">		<span class="attr">type</span>: <span class="string">&quot;object&quot;</span>,</span><br><span class="line">		 <span class="attr">properties</span>: &#123;</span><br><span class="line">		 <span class="attr">action</span>: &#123;</span><br><span class="line">			 <span class="attr">type</span>: <span class="string">&quot;string&quot;</span>,</span><br><span class="line">			 <span class="attr">description</span>: <span class="string">&quot;The action that needs user confirmation&quot;</span>,</span><br><span class="line">		 &#125;,</span><br><span class="line">		 <span class="attr">importance</span>: &#123;</span><br><span class="line">			 <span class="attr">type</span>: <span class="string">&quot;string&quot;</span>,</span><br><span class="line">			 <span class="attr">enum</span>: [<span class="string">&quot;low&quot;</span>, <span class="string">&quot;medium&quot;</span>, <span class="string">&quot;high&quot;</span>, <span class="string">&quot;critical&quot;</span>],</span><br><span class="line">			 <span class="attr">description</span>: <span class="string">&quot;The importance level of the action&quot;</span>,</span><br><span class="line">		 &#125;,</span><br><span class="line">	 &#125;,</span><br><span class="line">	 <span class="attr">required</span>: [<span class="string">&quot;action&quot;</span>],</span><br><span class="line">	 &#125;,</span><br><span class="line"> &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-6-前端研发定义⼀个AG-UI⼯具"><a href="#3-6-前端研发定义⼀个AG-UI⼯具" class="headerlink" title="3.6. 前端研发定义⼀个AG-UI⼯具"></a>3.6. 前端研发定义⼀个AG-UI⼯具</h3><blockquote>
+<p>先以微应⽤研发阶段为主，介绍在微应⽤开发过程中，前端研发⼈员如何定义并创建出⼀ 个 AG-UI ⼯具。</p>
+</blockquote>
+<p>微应⽤下的 AG-UI ⼯具的产出，将遵循微应⽤标准化⽅案。在微应⽤ hulu.manifest 定 义⽂件下，添加 AG-UI ⼯具的定义（需升级 @ali&#x2F;hulu-utils&gt;&#x3D;1.14.0，提供类型⽀持）。下 ⾯是⼀个基本的示例：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/hulu.manifest.ts </span></span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">AgUITool</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@ali/mlops-ag-ui&#x27;</span>; </span><br><span class="line"><span class="keyword">import</span> <span class="keyword">type</span> &#123; <span class="title class_">HuluManifest</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@ali/hulu-utils&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="attr">manifest</span>: <span class="title class_">HuluManifest</span> = &#123;</span><br><span class="line">	<span class="comment">/** * 微应用下的页面路由路径 */</span></span><br><span class="line">	<span class="attr">routes</span>: [],</span><br><span class="line">	<span class="comment">// ...other manifest options </span></span><br><span class="line">	<span class="comment">/** * 微应用下导出的给风控智能体使用的 AG-UI 工具 */</span></span><br><span class="line">	<span class="attr">agUITools</span>: [ </span><br><span class="line">		<span class="title class_">AgUITool</span>.<span class="title function_">define</span>( </span><br><span class="line">			<span class="comment">// AG-UI 工具标识名。大驼峰写法 </span></span><br><span class="line">			<span class="string">&#x27;&lt;name&gt;&#x27;</span>, </span><br><span class="line">			<span class="comment">// AG-UI 工具配置项</span></span><br><span class="line">			&#123; </span><br><span class="line">				<span class="comment">// AG-UI 工具的描述。将提供给大模型分析使用 </span></span><br><span class="line">				<span class="attr">description</span>: <span class="string">&#x27;简短描述当前 AG-UI 工具的功能、使用场景&#x27;</span>,</span><br><span class="line">				<span class="comment">// AG-UI 工具源码路径 </span></span><br><span class="line">				<span class="attr">source</span>: <span class="string">&#x27;./src/components/SomeComponent/index.tsx&#x27;</span>, </span><br><span class="line">				<span class="comment">// AG-UI 工具的显示位置</span></span><br><span class="line">				<span class="comment">// - `analysis`: 显示在回复区下的分析结果区域</span></span><br><span class="line">				<span class="comment">// - `deep-analysis`: 显示在深度分析结果区域</span></span><br><span class="line">				<span class="attr">position</span>: <span class="string">&#x27;deep-analysis&#x27;</span>,</span><br><span class="line">			&#125;,</span><br><span class="line">		),</span><br><span class="line">	],</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-7-接⼝设计"><a href="#3-7-接⼝设计" class="headerlink" title="3.7. 接⼝设计"></a>3.7. 接⼝设计</h3><ol>
+<li><p>获取历史会话记录：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">GET</span>: <span class="regexp">/session/</span>list</span><br><span class="line">-- </span><br><span class="line"><span class="title class_">Response</span> <span class="attr">data</span>:</span><br><span class="line"></span><br><span class="line">[ </span><br><span class="line">	&#123; </span><br><span class="line">		<span class="string">&quot;sessionId&quot;</span>: <span class="string">&quot;392cb1c7-9751-4198-82fc-6b1b0d7dd3fe&quot;</span>, </span><br><span class="line">		<span class="string">&quot;title&quot;</span>: <span class="string">&quot;你好&quot;</span>, </span><br><span class="line">		<span class="string">&quot;gmtModified&quot;</span>: <span class="string">&quot;2024-06-12T04:02:10.000+00:00&quot;</span> </span><br><span class="line">	&#125; </span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>根据会话 id 获取对话记录：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">GET</span>: <span class="regexp">/chat/</span>findById--</span><br><span class="line"><span class="attr">query</span>: sessionId=392cb1c7-<span class="number">9751</span>-<span class="number">4198</span>-82fc-6b1b0d7dd3fe--</span><br><span class="line"><span class="title class_">Response</span></span><br><span class="line"> <span class="attr">data</span>: [</span><br><span class="line">	 &#123;</span><br><span class="line">		 <span class="attr">queryId</span>: <span class="number">5571</span>,</span><br><span class="line">		 <span class="attr">query</span>: <span class="string">&quot;你好&quot;</span>,</span><br><span class="line">		 <span class="attr">sessionId</span>:  <span class="string">&quot;392cb1c7-9751-4198-82fc-6b1b0d7dd3fe&quot;</span>,</span><br><span class="line">		 <span class="attr">response</span>: &#123;</span><br><span class="line">			 <span class="string">&quot;id&quot;</span>: <span class="number">5479</span>,</span><br><span class="line">			 <span class="string">&quot;response&quot;</span>: <span class="string">&quot;很抱歉，这个问题暂时无法回答～换个问题试试看&quot;</span>,</span><br><span class="line">			 <span class="string">&quot;ossUrlList&quot;</span>: []</span><br><span class="line">		 &#125;</span><br><span class="line">	 &#125;</span><br><span class="line"> ]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建会话</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">ST</span>: <span class="regexp">/session/</span>create--</span><br><span class="line"><span class="title class_">Params</span>:</span><br><span class="line"> &#123;</span><br><span class="line"> <span class="string">&quot;title&quot;</span>: <span class="string">&quot;你好&quot;</span></span><br><span class="line"> &#125;--</span><br><span class="line"><span class="title class_">Response</span>:</span><br><span class="line"> <span class="attr">data</span>: <span class="string">&quot;c6eaf4ff-7639-4ba5-8ac0-e65b86cbb165&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>对话流</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable constant_">SSE</span> <span class="attr">POST</span>: chat/query--</span><br><span class="line"><span class="title class_">Params</span>:</span><br><span class="line"> &#123;</span><br><span class="line">	 <span class="string">&quot;sessionId&quot;</span>: <span class="string">&quot;c6eaf4ff-7639-4ba5-8ac0-e65b86cbb165&quot;</span>,</span><br><span class="line">	 <span class="string">&quot;query&quot;</span>: <span class="string">&quot;你好&quot;</span>,</span><br><span class="line">	 <span class="string">&quot;ossUrlList&quot;</span>: []</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> --</span><br><span class="line"><span class="title class_">Response</span> <span class="attr">SSE</span>:</span><br><span class="line"> &#123;<span class="string">&quot;content&quot;</span>:<span class="string">&quot;我目前无法&quot;</span>,<span class="string">&quot;id&quot;</span>:<span class="number">2994181</span>&#125;</span><br><span class="line"> &#123;<span class="string">&quot;content&quot;</span>:<span class="string">&quot;我目前无法解决你的问题&quot;</span>,<span class="string">&quot;id&quot;</span>:<span class="number">2994181</span>&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="四、智能体交互协议应⽤"><a href="#四、智能体交互协议应⽤" class="headerlink" title="四、智能体交互协议应⽤"></a>四、智能体交互协议应⽤</h2><blockquote>
+<p>社区有个开源项⽬ CopilotKit 提出 CoAgents：⼀个重塑⼈机交互 AI Agent 的前端框架， 通过 Agent UI 和 LangGraph 集成构建下⼀代交互式应⽤程序</p>
+</blockquote>
+<h3 id="4-1-中台智能体-4-1-1-对话流程"><a href="#4-1-中台智能体-4-1-1-对话流程" class="headerlink" title="4.1. 中台智能体 4.1.1. 对话流程"></a>4.1. 中台智能体 4.1.1. 对话流程</h3><p>方式1：<br>![[Pasted image 20250629162924.png]]</p>
+<p>方式2：<br>![[Pasted image 20250629163352.png]]</p>
+<h3 id="4-1-2-对话内容协议"><a href="#4-1-2-对话内容协议" class="headerlink" title="4.1.2. 对话内容协议"></a>4.1.2. 对话内容协议</h3><p>统⼀使⽤ LLM 的 MarkDown 格式返回，返回内容携带 Tag 区分 UI Tools：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	id<span class="string">&quot;:2994181,</span></span><br><span class="line"><span class="string">	 &quot;</span>content<span class="string">&quot;:&quot;</span></span><br><span class="line">			 ## 这是你的预审列表</span><br><span class="line">			<span class="string">``</span><span class="string">`ui-tool</span></span><br><span class="line"><span class="string">			 &#123;</span></span><br><span class="line"><span class="string">				 &quot;componentType&quot;: &quot;PRE_LIST&quot;,</span></span><br><span class="line"><span class="string">				 &quot;props&quot;: &#123;</span></span><br><span class="line"><span class="string">					 &quot;taskId&quot;: &quot;123&quot;,</span></span><br><span class="line"><span class="string">					 ...</span></span><br><span class="line"><span class="string">				 &#125;</span></span><br><span class="line"><span class="string">			&#125;</span></span><br><span class="line"><span class="string">`</span><span class="string">``</span>ui-tool</span><br><span class="line"> &#123;</span><br><span class="line"> <span class="string">&quot;componentType&quot;</span>: <span class="string">&quot;PRE_LIST_DETAIL&quot;</span>,</span><br><span class="line"> <span class="string">&quot;props&quot;</span>: &#123;</span><br><span class="line"> <span class="string">&quot;taskId&quot;</span>: <span class="string">&quot;123&quot;</span>,</span><br><span class="line"> ...</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-1-3-注册-UI-组件协议"><a href="#4-1-3-注册-UI-组件协议" class="headerlink" title="4.1.3.注册 UI 组件协议"></a>4.1.3.注册 UI 组件协议</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[ &#123;</span><br><span class="line"> &quot;componentType&quot;: &quot;PRE_LIST&quot;, </span><br><span class="line"> &quot;description&quot;: &#x27;简短描述当前 AgentUI 工具的功能、使用场景, 将提供给大模 型分析使用&#x27;, &quot;propTypes&quot;:</span><br><span class="line">  &#123;</span><br><span class="line">   // &quot;UI 工具需要的参数&quot;</span><br><span class="line">    &quot;name&quot;: &#123; // 参数名称 &quot;describe&quot;: &quot;&quot;,</span><br><span class="line">     // 参数的描述，取值要求等</span><br><span class="line">      &quot;type&quot;: &quot;string&quot;</span><br><span class="line">	       // 参数类型,string/int/boolean... </span><br><span class="line">	       &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">     required: [&#x27;name&#x27;]      </span><br><span class="line">&#125; ]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>组件定义可以通过⽂档上传到 RAG 知识库，在模型使⽤时通过上下⽂进⾏交互：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">##角色</span><br><span class="line">你是一位前端技术专家，专注于UI组件的应用与解析。</span><br><span class="line">##技能</span><br><span class="line">1. **</span><br><span class="line"> ##限制</span><br><span class="line">2. **</span><br><span class="line">复制代码</span><br><span class="line">组件注册**：根据$&#123;components&#125;注册的组件解析组件用途和参数，为后续工作提供</span><br><span class="line">可选的组件列表。</span><br><span class="line">3. **</span><br><span class="line">组件解析**：根据用户问题，你能够返回可用的UI组件；以及根据上一步获取到的答</span><br><span class="line">案 `$&#123;result&#125;` 理解其含义，分析出UI组件所需的合适参数。你必须确保参数类型、必</span><br><span class="line">填项的正确性。</span><br><span class="line">输出格式**：你的回答必须只有JSON格式：`&#123;componentName: &quot;组件名称&quot;, </span><br><span class="line">props: &#123;...参数对象...&#125;&#125;`。不要回复除 JSON 格式之外的内容。</span><br><span class="line">4. **</span><br><span class="line">缺省组件**：当没有合适的UI组件匹配用户的需求时，你应返回默认组件</span><br><span class="line">`&#123;componentName: &quot;Text&quot;, props: &#123;&quot;value&quot;: `$&#123;result&#125;`&#125;&#125;`。</span><br><span class="line">请确保所有回答都严格遵守上述规定</span><br></pre></td></tr></table></figure>
+<p>返回内容 使⽤标准 JSON 结构，由后端编排 LLM + MCP + UI Tools 的⼯具流程，将 MarkDown 内容 与 UI Tools 内容分别返回：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	 id&quot;:2994181,</span><br><span class="line">	 &quot;content&quot;:&quot;这是你的10条预审列表&quot;,</span><br><span class="line">	 &quot;uiTools&quot;:[</span><br><span class="line">		 &#123;</span><br><span class="line">			 &quot;componentType&quot;: &quot;PRE_LIST&quot;,</span><br><span class="line">			 &quot;props&quot;: &#123;</span><br><span class="line">				 &quot;taskId&quot;: &quot;123&quot;,</span><br><span class="line">				 ...</span><br><span class="line">			 &#125;</span><br><span class="line">		 &#125;</span><br><span class="line">	 ]</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. 总结</h2><p>给我的感觉就是，不要限制自己的边界，不要限制想象力，不要闭门造车。在跟着大模型发展的脚步走，就像玉伯大佬说的：大模型就是碾压机，它碾过的地方将一片坦途，我们要紧跟它的脚步，不能走在它前面。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://speronis.github.io/2025/06/29/%E6%99%BA%E8%83%BD%E4%BD%93%E4%BA%A4%E4%BA%92%E5%8D%8F%E8%AE%AE/" data-id="cmchkpg9q0000usmhh056chzb" data-title="" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2025/03/31/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%A7%86%E9%87%8E%E5%88%86%E4%BA%AB/" rel="tag">视野分享</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/%E8%A7%86%E9%87%8E%E5%88%86%E4%BA%AB/" style="font-size: 10px;">视野分享</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">June 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/03/">March 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2025/06/29/%E6%99%BA%E8%83%BD%E4%BD%93%E4%BA%A4%E4%BA%92%E5%8D%8F%E8%AE%AE/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2024/03/05/WebAssembly%E9%80%9F%E9%80%9A/">WebAssembly速通</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/09/web%20%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE%E4%B8%80%E6%9D%86%E5%88%B0%E5%BA%95/">web视频播放一杆到底</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 SPERONIS<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
